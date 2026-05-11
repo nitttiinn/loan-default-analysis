@@ -70,7 +70,7 @@ plt.savefig('Charts/chart3_Income_Group.png')
 #plt.show()
 
 # Chart 4 -> Default Rate by Loan Amount Group:
-loan_order = income_order = ['Very Small','Small','Medium','Large','Very Large']
+loan_order  = ['Very Small','Small','Medium','Large','Very Large']
 loan_amount_default = df.groupby('loan_amount_group')['Status'].mean().mul(100)
 loan_amount_default = loan_amount_default.reindex(loan_order)
 
@@ -86,5 +86,67 @@ for bar,val in zip(bars,loan_amount_default.values):
              f'{val:.1f}%',ha= 'center',fontsize=10,fontweight = 'bold')
     
 plt.tight_layout()
-plt.savefig('Charts/chart3_Loan_Amount.png')
+plt.savefig('Charts/chart4_Loan_Amount.png')
+#plt.show()
+
+# Chart 5 - Default Rate by LTV Group:
+ltv_order  = ['Very Low','Low','Medium','High','Very High']
+ltv_default = df.groupby('ltv_group')['Status'].mean().mul(100)
+ltv_default = ltv_default.reindex(ltv_order)
+
+plt.figure(figsize=(10,5))
+bars = plt.bar(ltv_default.index,ltv_default.values,color = ['green','lightgreen','yellow','orange','red'])
+plt.title('Default Rate by LTV Group',fontsize = 14,fontweight = 'bold')
+plt.xlabel('LTV Group')
+plt.ylabel('Default Rate %')
+plt.ylim(0,ltv_default.max()+5)
+
+for bar,val in zip(bars,ltv_default.values):
+    plt.text(bar.get_x()+bar.get_width()/2,bar.get_height()+0.5,
+             f'{val:.1f}%',ha= 'center',fontsize=10,fontweight = 'bold')
+    
+plt.tight_layout()
+plt.savefig('Charts/chart5_LTV_Group.png')
+#plt.show()
+
+#Chart 6 - Default Rate by Region:
+region_default = df.groupby('Region')['Status'].mean().mul(100).sort_values(ascending=False)
+
+plt.figure(figsize=(10,5))
+bars = plt.bar(region_default.index,region_default.values,color = 'steelblue')
+plt.title('Default Rate by Region',fontsize = 14,fontweight = 'bold')
+plt.xlabel('Region')
+plt.ylabel('Default Rate %')
+plt.ylim(0,region_default.max()+5)
+
+for bar,val in zip(bars,region_default.values):
+    plt.text(bar.get_x()+bar.get_width()/2,bar.get_height()+0.5,
+             f'{val:.1f}%',ha= 'center',fontsize=10,fontweight = 'bold')
+    
+plt.tight_layout()
+plt.savefig('Charts/chart6_Region.png')
+#plt.show()
+
+# Chart 7 -> Heatmap -> Default Rate by Region & Income Group:
+plt.figure(figsize=(10,5))
+
+pivot = df.pivot_table(values='Status',index='Region',columns='income_group',aggfunc='mean')*100
+sns.heatmap(pivot,annot=True,fmt='0.1f',cmap = 'RdYlGn_r', linewidths=0.5,cbar_kws={'label':'Default Rate %'})
+plt.title('Default Rate by Region  & Income Group',fontsize = 14,fontweight = 'bold')
+plt.tight_layout()
+plt.savefig('Charts/chart7_Heatmap.png')
+#plt.show()
+
+# Chart 8 -> Distribution of Credit Scores
+plt.figure(figsize=(10,5))
+df[df['Status'] == 0]['Credit_Score'].hist(bins=30,alpha = 0.7,color='green',label = 'Paid Back')
+df[df['Status'] == 1]['Credit_Score'].hist(bins=30,alpha = 0.7,color='red',label = 'Defaulted')
+plt.title('Credit Score Distribution - Defaulted vs Paid Back',fontsize = 14,fontweight = 'bold')
+plt.xlabel('Credit Score')
+plt.ylabel('Count')
+plt.legend()
+plt.tight_layout()
+plt.savefig('Charts/chart8_credit_distribution.png')
 plt.show()
+
+print("All Charts Saved!✅")
