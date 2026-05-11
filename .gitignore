@@ -1,0 +1,7 @@
+Data/
+Charts/
+
+__pycache__/
+*.pyc
+
+kaggle.json
