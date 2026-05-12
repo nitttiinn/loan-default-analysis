@@ -1,7 +1,6 @@
 Data/
+*.xlsx
 Charts/
-
 __pycache__/
 *.pyc
-
 kaggle.json
